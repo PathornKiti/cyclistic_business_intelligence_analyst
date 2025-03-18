@@ -3,3 +3,8 @@ pandas
 pyarrow
 numpy
 pyspark
+requests
+google-cloud-bigquery
+google-oauth2-tool 
+google-cloud-storage
+google-cloud-bigquery-storage

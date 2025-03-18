@@ -59,6 +59,13 @@ RUN chmod u+x /opt/spark/sbin/* && \
 
 ENV PYTHONPATH=$SPARK_HOME/python/:$PYTHONPATH
 
+# Add this line to install BigQuery Connector
+# Create Spark JARs directory before downloading dependencies
+RUN mkdir -p /opt/spark/jars && \
+    wget -P /opt/spark/jars https://storage.googleapis.com/spark-lib/bigquery/spark-3.5-bigquery-0.42.1.jar
+
+
+
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
