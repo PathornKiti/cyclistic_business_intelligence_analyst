@@ -9,6 +9,6 @@ google-oauth2-tool
 google-cloud-storage
 google-cloud-bigquery-storage
 geopandas 
-shapely 
-fiona 
 pyproj
+setuptools
+shapely
