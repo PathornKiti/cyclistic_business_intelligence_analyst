@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   spark-master:
     container_name: da-spark-master
@@ -15,6 +13,7 @@ services:
       - ./data:/opt/spark/data
       - ./spark_apps:/opt/spark/apps
       - spark-logs:/opt/spark/spark-events
+      - ./spark_logs:/opt/spark/logs 
       - ./gcp:/opt/gcp  
     env_file:
       - .env.spark
