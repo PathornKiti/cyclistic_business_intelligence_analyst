@@ -14,3 +14,4 @@ setuptools
 shapely
 geopy
 db_dtypes
+Unidecode

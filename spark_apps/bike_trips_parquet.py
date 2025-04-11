@@ -10,8 +10,8 @@ import re
 from pyspark.sql import SparkSession
 from pyspark.sql.types import (StructType, StructField, StringType, 
                                IntegerType, FloatType, TimestampType)
-from pyspark.sql.functions import when,col, to_date, to_timestamp,regexp_replace
-
+from pyspark.sql.functions import when,col, to_date, to_timestamp,regexp_replace,lit,concat,length
+from unidecode import unidecode
 from google.cloud import bigquery
 from google.cloud import storage
 from google.oauth2 import service_account
@@ -28,7 +28,7 @@ logger.addHandler(file_handler)
 
 
 # Constants
-YEARS = range(2014, 2020)  # For testing, using only 2014; extend to 2023 as needed
+YEARS = range(2015, 2016)  # For testing, using only 2014; extend to 2023 as needed
 BASE_ZIP_URL = "https://s3.amazonaws.com/tripdata/{}-citibike-tripdata.zip"
 ZIP_DIR = "zip_files"
 EXTRACT_DIR = "citibike_tripdata"
@@ -220,8 +220,13 @@ def process_and_upload_year(year):
                 continue
 
             logger.info(f"Reading {len(abs_csv_files)} CSV files for group {ym}.")
+
+            
             # Read all CSVs at once; Spark will union them automatically.
             df = spark.read.csv(abs_csv_files, header=True, inferSchema=True)
+
+            logger.info("Schema for %s:\n%s", ym, df.printSchema())
+            logger.info("Sample rows Before %s:\n%s", ym, df.limit(5).toPandas().to_string())
 
             for col_name in df.columns:
                 normalized_name = col_name.lower().replace(" ", "_")
@@ -243,21 +248,33 @@ def process_and_upload_year(year):
             df = df.withColumn("starttime", regexp_replace(col("starttime"), r"\.[0-9]+", ""))
             df = df.withColumn("stoptime", regexp_replace(col("stoptime"), r"\.[0-9]+", ""))
 
+            # Convert starttime column handling both formats:
             df = df.withColumn(
                 "starttime",
                 when(
+                    # If contains "/" and is short (likely missing seconds, e.g. "6/1/2015 0:00")
+                    (col("starttime").contains("/")) & (length(col("starttime")) <= 14),
+                    # Append ":00" and then convert with pattern "M/d/yyyy H:mm:ss"
+                    to_timestamp(concat(col("starttime"), lit(":00")), "M/d/yyyy H:mm:ss")
+                ).when(
                     col("starttime").contains("/"),
-                    to_timestamp(col("starttime"), "M/d/yyyy HH:mm:ss")
+                    # Otherwise convert assuming the timestamp already has seconds
+                    to_timestamp(col("starttime"), "M/d/yyyy H:mm:ss")
                 ).otherwise(
+                    # Fallback to ISO format conversion
                     to_timestamp(col("starttime"), "yyyy-MM-dd HH:mm:ss")
                 )
             )
 
+            # Convert stoptime column using similar logic
             df = df.withColumn(
                 "stoptime",
                 when(
+                    (col("stoptime").contains("/")) & (length(col("stoptime")) <= 14),
+                    to_timestamp(concat(col("stoptime"), lit(":00")), "M/d/yyyy H:mm:ss")
+                ).when(
                     col("stoptime").contains("/"),
-                    to_timestamp(col("stoptime"), "M/d/yyyy HH:mm:ss")
+                    to_timestamp(col("stoptime"), "M/d/yyyy H:mm:ss")
                 ).otherwise(
                     to_timestamp(col("stoptime"), "yyyy-MM-dd HH:mm:ss")
                 )
@@ -265,6 +282,7 @@ def process_and_upload_year(year):
             df = df.withColumn("start_date", to_date(col("starttime")))
             df = df.withColumn("start_date", to_timestamp(col("starttime"), "yyyy-MM-dd HH:mm:ss"))
 
+            logger.info("Sample rows After %s:\n%s", ym, df.limit(5).toPandas().to_string())
             #Debug
             '''
             df=df.limit(5)

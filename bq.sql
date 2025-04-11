@@ -1,6 +1,6 @@
 WITH summer_trips AS (
   SELECT *
-  FROM `conicle-ai.Recommend.citibike_trips_native`
+  FROM `conicle-ai.Recommend.citibike_trips_external`
   WHERE EXTRACT(YEAR FROM starttime) IN (2014, 2015, 2016)
 ),
 
