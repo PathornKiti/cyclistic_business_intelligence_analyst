@@ -4,7 +4,6 @@ import requests
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point
-from shapely import wkt
 from pyspark.sql import SparkSession
 from google.cloud import bigquery
 from google.oauth2 import service_account
@@ -59,47 +58,33 @@ def request_station_data():
     return cleaned_df
 
 # ───────────────────────────────
-# 🌐 Step 2A: Load ZIP Code Shapes (Polygon Geometry)
+# 🌐 Step 2: Load NTA Geometry (GeoJSON)
 # ───────────────────────────────
-def load_zipcode_shapes() -> gpd.GeoDataFrame:
-    url = "https://data.cityofnewyork.us/api/views/pri4-ifjk/rows.csv?date=20250410&accessType=DOWNLOAD"
-    logger.info("🌐 Downloading ZIP Code geometry from NYC Open Data...")
-    
-    df = pd.read_csv(url)
-    geometry = gpd.GeoSeries.from_wkt(df["the_geom"])
-    gdf = gpd.GeoDataFrame(df[["MODZCTA"]].copy(), geometry=geometry, crs="EPSG:4326")
-    
-    logger.info("✅ ZIP Code shapefile loaded and parsed.")
-    return gdf
+def load_nta_shapes() -> gpd.GeoDataFrame:
+    logger.info("🌐 Downloading NTA boundaries from NYC Open Data...")
 
-# ───────────────────────────────
-# 🌐 Step 2B: Load ZIP → Borough/Neighborhood Metadata
-# ───────────────────────────────
-def load_zipcode_metadata() -> pd.DataFrame:
-    meta_url = "https://raw.githubusercontent.com/erikgregorywebb/nyc-housing/refs/heads/master/Data/nyc-zip-codes.csv"
-    logger.info("🌐 Downloading ZIP code metadata (borough, neighborhood)...")
+    url = "https://data.cityofnewyork.us/resource/9nt8-h7nd.geojson"
+    gdf = gpd.read_file(url)
+    gdf = gdf.to_crs("EPSG:4326")  # Ensure proper CRS
 
-    meta_df = pd.read_csv(meta_url)
-    meta_df = meta_df.rename(columns={
-        "ZipCode": "zipcode",
-        "Borough": "borough",
-        "Neighborhood": "neighborhood"
+    logger.info(f"🔍 Columns found: {list(gdf.columns)}")
+
+    # Fix: lowercase keys
+    gdf = gdf.rename(columns={
+        "boroname": "borough",
+        "ntaname": "neighborhood"
     })
 
-    # Clean and convert ZIPs to integer
-    meta_df["zipcode"] = pd.to_numeric(meta_df["zipcode"], errors="coerce").astype("Int64")
-    meta_df["borough"] = meta_df["borough"].astype(str)
-    meta_df["neighborhood"] = meta_df["neighborhood"].astype(str)
+    logger.info("✅ NTA shapefile with borough/neighborhood loaded.")
+    return gdf[["borough", "neighborhood", "geometry"]]
 
-    logger.info("✅ Metadata loaded and standardized.")
-    return meta_df[["zipcode", "borough", "neighborhood"]]
 
 
 # ───────────────────────────────
-# 📌 Step 3: Spatial Join + Enrichment
+# 📌 Step 3: Spatial Join to Enrich Station Data
 # ───────────────────────────────
-def enrich_with_zipcodes(station_df: pd.DataFrame, zipcode_gdf: gpd.GeoDataFrame, zipcode_meta: pd.DataFrame) -> pd.DataFrame:
-    logger.info("📌 Enriching station data with ZIP codes...")
+def enrich_with_nta(station_df: pd.DataFrame, nta_gdf: gpd.GeoDataFrame) -> pd.DataFrame:
+    logger.info("📌 Enriching station data with NTA neighborhoods...")
 
     station_gdf = gpd.GeoDataFrame(
         station_df,
@@ -107,17 +92,11 @@ def enrich_with_zipcodes(station_df: pd.DataFrame, zipcode_gdf: gpd.GeoDataFrame
         crs="EPSG:4326"
     )
 
-    joined = gpd.sjoin(station_gdf, zipcode_gdf, how="left", predicate="within")
-    enriched = pd.DataFrame(joined.drop(columns=["geometry", "index_right"]))
-    enriched = enriched.rename(columns={"MODZCTA": "zipcode"})
-    enriched["zipcode"] = pd.to_numeric(enriched["zipcode"], errors="coerce").astype("Int64")
-    enriched = enriched.dropna(subset=["zipcode"])
+    joined = gpd.sjoin(station_gdf, nta_gdf, how="left", predicate="within")
 
-    logger.info("🔗 Joining with borough and neighborhood metadata...")
-    enriched = pd.merge(enriched, zipcode_meta, on="zipcode", how="left")
-
-    logger.info("✅ ZIP code, borough, and neighborhood enrichment complete.")
-    return enriched
+    enriched = joined.drop(columns=["geometry", "index_right"])
+    logger.info("✅ Spatial enrichment complete.")
+    return pd.DataFrame(enriched)
 
 # ───────────────────────────────
 # 🛢️ Step 4: Upload to BigQuery
@@ -131,17 +110,14 @@ def upload_to_bigquery(df: pd.DataFrame):
     df["borough"] = df["borough"].astype(str)
     df["neighborhood"] = df["neighborhood"].astype(str)
 
-    # Drop true NaNs before converting to string
     df = df.dropna(subset=["borough", "neighborhood"])
 
-    # Also filter out any lingering 'nan' strings
     df = df[~df["borough"].str.lower().eq("nan")]
     df = df[~df["neighborhood"].str.lower().eq("nan")]
-    # Drop rows with missing required data
+
     required_columns = [
-        "station_id", "name", "latitude", "longitude", 
-        "region_id", "capacity", "zipcode", 
-        "borough", "neighborhood"
+        "station_id", "name", "short_name", "latitude", "longitude", 
+        "region_id", "capacity", "borough", "neighborhood"
     ]
     df = df.dropna(subset=required_columns)
 
@@ -153,7 +129,6 @@ def upload_to_bigquery(df: pd.DataFrame):
         bigquery.SchemaField("longitude", "FLOAT"),
         bigquery.SchemaField("region_id", "INTEGER"),
         bigquery.SchemaField("capacity", "INTEGER"),
-        bigquery.SchemaField("zipcode", "INTEGER"),
         bigquery.SchemaField("borough", "STRING"),
         bigquery.SchemaField("neighborhood", "STRING")
     ]
@@ -171,11 +146,10 @@ def upload_to_bigquery(df: pd.DataFrame):
 # 🧩 Step 5: Run Pipeline
 # ───────────────────────────────
 def run_pipeline():
-    logger.info("🚦 Starting ETL pipeline for Citi Bike ZIP codes + borough/neighborhood...")
+    logger.info("🚦 Starting ETL pipeline for Citi Bike station locations with neighborhood info...")
     station_df = request_station_data()
-    zipcode_gdf = load_zipcode_shapes()
-    zipcode_meta = load_zipcode_metadata()
-    enriched_df = enrich_with_zipcodes(station_df, zipcode_gdf, zipcode_meta)
+    nta_gdf = load_nta_shapes()
+    enriched_df = enrich_with_nta(station_df, nta_gdf)
     upload_to_bigquery(enriched_df)
     logger.info("🎉 Pipeline completed successfully.")
 
