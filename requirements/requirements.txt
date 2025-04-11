@@ -12,3 +12,5 @@ geopandas
 pyproj
 setuptools
 shapely
+geopy
+db_dtypes
