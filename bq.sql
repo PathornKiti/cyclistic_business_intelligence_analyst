@@ -1,9 +1,7 @@
--- Filter trips for summer months (June to August) for 2014, 2015, and 2016
 WITH summer_trips AS (
   SELECT *
   FROM `conicle-ai.Recommend.citibike_trips_native`
   WHERE EXTRACT(YEAR FROM starttime) IN (2014, 2015, 2016)
-    AND EXTRACT(MONTH FROM starttime) IN (6, 7, 8)
 ),
 
 joined_data AS (
@@ -17,10 +15,8 @@ joined_data AS (
       ELSE 'Night'
     END AS time_of_day,
     CAST(t.tripduration / 60 AS INT64) AS trip_minute, 
-    s_start.zipcode AS start_zipcode,
     s_start.borough AS start_borough,
     s_start.neighborhood AS start_neighborhood,
-    s_end.zipcode AS end_zipcode,
     s_end.borough AS end_borough,
     s_end.neighborhood AS end_neighborhood
   FROM summer_trips t
@@ -35,8 +31,6 @@ joined_data AS (
 joined_with_weather AS (
   SELECT
     jd.usertype,
-    jd.start_zipcode,
-    jd.end_zipcode,
     jd.start_borough,
     jd.end_borough,
     jd.start_neighborhood,
