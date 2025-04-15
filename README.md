@@ -82,11 +82,12 @@ This reflects the **station's directional bias**—whether it's primarily a **tr
 
 #### 📊 Net Flow Interpretation Table
 
-| **Net Flow Value** | **Meaning**                                                                                     | **Potential Location Analysis**                                             |
-|--------------------|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| `> 0`              | More trips **ended** than started → Indicates a **destination station**.                        | Likely **residential areas**, **evening hotspots**, or **parks**.           |
-| `< 0`              | More trips **started** than ended → Indicates an **origin station**.                            | Common in **office zones**, **commuter hubs**, or **campuses**.             |
-| `= 0`              | Balanced station usage → Equal inbound and outbound flow.                                       | Typically found in **mixed-use areas**, like **downtowns** or **tourist areas**. |
+| **Net Flow Value** | **Meaning**                                                                                                           | **Potential Location Analysis**                                             |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| `> 0`              | More trips **ended** than started → Indicates a **destination station**.<br>🟢 Potential **bike surplus**.             | Likely **residential areas**, **evening hotspots**, or **parks**.           |
+| `< 0`              | More trips **started** than ended → Indicates an **origin station**.<br>🔴 Potential **bike shortage**.                | Common in **office zones**, **commuter hubs**, or **campuses**.             |
+| `= 0`              | Balanced station usage → Equal inbound and outbound flow.<br>⚖️ **No imbalance**, efficient flow.                     | Typically found in **mixed-use areas**, like **downtowns** or **tourist areas**. |
+
 
 ---
 
