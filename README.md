@@ -8,7 +8,7 @@ This repository contains documents and resources related to the **Cyclistic Busi
 - [**Cyclistic_Project_Requirements.pdf**](Documents/Cyclistic_Project_Requirements.pdf): Details the project scope, deliverables, and success criteria.
 - [**Cyclistic_Stakeholder_Requirements.pdf**](Documents/Cyclistic_Stakeholder_Requirements.pdf): Outlines the key stakeholders and their expectations.
 - [**Cyclistic_Strategy_Document.pdf**](Documents/Cyclistic_Strategy_Document.pdf): Provides strategic insights for customer growth and station expansion.
-- [**NYC-citibike.pdf**](Documents/NYC-citibike.pdf): Summary report of trip volume, user behavior, and trip route patterns in New York.
+
 
 ## 📊 Cyclistic Business Intelligence Report Summary
 
@@ -20,7 +20,7 @@ This section summarizes the three key pages of the NYC Citibike dashboard report
 
 ![Start Station Location - Report Page 1](pic/report-1.png)
 
-This page provides a detailed view of **trip activity by start station**, focusing on trip volume and duration across **Manhattan neighborhoods**. It distinguishes usage between **Subscribers** and **Customers**, highlighting differences in volume and trip time.
+This page provides a detailed view of **trip activity by start station**, focusing on trip volume and duration across **New York City**. It distinguishes usage between **Subscribers** and **Customers**, highlighting differences in volume and trip time.
 
 #### Key Features:
 - **Map visualization**: Blue circles represent trip density per station.
