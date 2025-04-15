@@ -10,103 +10,96 @@ This repository contains documents and resources related to the **Cyclistic Busi
 - [**Cyclistic_Strategy_Document.pdf**](Documents/Cyclistic_Strategy_Document.pdf): Provides strategic insights for customer growth and station expansion.
 - [**NYC-citibike.pdf**](Documents/NYC-citibike.pdf): Summary report of trip volume, user behavior, and trip route patterns in New York.
 
-## NYC Citibike Report Summary
+## 📊 Cyclistic Business Intelligence Report Summary
+
+This section summarizes the three key pages of the NYC Citibike dashboard report, with visuals and detailed breakdowns to guide business insights and analysis.
+
+---
 
 ### 📄 Page 1: Start Location Analysis
 
-This page provides a detailed overview of **trip activity by start location**, focusing on both **trip volume** and **average trip duration** across various areas of New York City. The data is segmented by **borough** and **neighborhood**, enabling localized insights into ridership behavior.
+![Start Station Location - Report Page 1](pic/report-1.png)
 
-#### 🔍 Key Metrics:
-- **Number of Trips**: Total trips initiated from each start location.
-- **Average Trip Duration** (in minutes): The average time taken per trip starting from that location.
+This page provides a detailed view of **trip activity by start station**, focusing on trip volume and duration across **Manhattan neighborhoods**. It distinguishes usage between **Subscribers** and **Customers**, highlighting differences in volume and trip time.
 
-#### 🗺️ Geographic Breakdown:
-- **Borough**: High-level regional division (e.g., Manhattan, Queens).
-- **Neighborhood**: Finer granularity within each borough (e.g., Chelsea-Hudson Yards, East Village).
+#### Key Features:
+- **Map visualization**: Blue circles represent trip density per station.
+- **Tabular summary**: Breakdown by borough and neighborhood with:
+  - Number of trips
+  - Average trip duration (Subscribers vs Customers)
 
-#### 🎛️ Interactive Filters:
-- **Season**: Compare ridership across different seasons (e.g., Spring vs. Winter).
-- **Time of Day**: Analyze user behavior across morning, afternoon, evening, and night periods.
+#### Interactive Filters:
+- **Date range**
+- **Time of Day**
+- **Season**
+- **User Type**
+- **Start Neighborhood**
 
-This visualization helps identify **popular pickup locations**, evaluate **temporal usage patterns**, and guide decisions related to **station placement**, **fleet distribution**, and **marketing strategies** tailored to specific locations and times.
-
-
-### 📄 Page 2: Start–Destination Trip and Congestion Analysis
-
-This page examines detailed **trip flows between stations**, providing a pairwise analysis of **start and destination locations** at both the **station** and **neighborhood** levels.
-
-#### 🔁 Key Metrics:
-- **Start Station → Destination Station**: Each route is listed with clear start and end points.
-- **Neighborhood Pairing**: Each station is mapped to its respective neighborhood to understand broader area-level traffic.
-- **Number of Trips**: Total volume for each start–destination pair.
-- **Average Speed (km/h)**: A congestion proxy—lower speeds typically indicate higher traffic density or urban congestion.
-
-#### ⚙️ Interactive Filters:
-- **Season**: Analyze trip flows by time of year to identify seasonal commuting trends.
-- **Time of Day**: Filter routes based on time segments (e.g., morning rush vs. evening leisure).
-- **Rain Condition**: A weather filter that distinguishes trip behavior on **rainy days** versus **clear weather**, using precipitation data.
-
-This analysis allows users to:
-- Pinpoint **popular travel corridors** and **busiest connections**.
-- Detect **high-congestion zones** using average speed as an indicator.
-- Compare user behavior under **varying time and weather conditions**, essential for planning bike redistribution, improving route infrastructure, and forecasting demand under different scenarios.
-
-
-### 📄 Page 3: Net Flow & Monthly Trip Trend Analysis
-
-This page provides two key insights into system performance:
-
-1. **Total Trips by Month**: Visualized as a time series to track long-term ridership patterns.
-2. **Station-Level Net Flow**: Highlights imbalances between bike pickups and drop-offs.
+This page helps identify high-volume pickup areas and typical trip lengths based on user segments.
 
 ---
 
-#### 📈 Monthly Trip Trends
-- A **line chart** displays total monthly trips across the selected date range.
-- Segmented by user type (e.g., **Subscriber** vs. **Customer**).
-- Useful for identifying **seasonal fluctuations**, usage spikes, and **growth trends**.
+### 📄 Page 2: Start–Destination Flow & Congestion
+
+![Trip Flows & Top Routes - Report Page 2](pic/report-2.png)
+
+This page analyzes trips as **start-to-destination pairs** at both **station** and **neighborhood** levels. It quantifies usage patterns and **trip congestion** via average speed.
+
+#### Key Features:
+- **Top Destination Neighborhoods**: Ranked by trip count (e.g., Chelsea-Hudson Yards, East Village).
+- **Station-to-Station Flows**: Lists route pairs with:
+  - Start & destination station
+  - Neighborhood pairing
+  - Number of trips
+  - **Average speed (km/h)** — used as a congestion indicator
+
+#### Interactive Filters:
+- **Date Range**
+- **Time of Day**
+- **Season**
+- **Start/Destination Neighborhood**
+- **Rain Condition**
+
+This section is ideal for identifying commuting patterns, high-demand travel corridors, and potentially congested routes.
 
 ---
 
-#### 🔄 Net Flow Analysis
+### 📄 Page 3: Monthly Trends & Net Flow Analysis
 
-The **net flow** metric captures the difference between the number of bikes returned and the number checked out at each station:
+![Monthly Trips and Net Flow - Report Page 3](pic/report-3.png)
 
-```
-Net Flow = Trips Ended - Trips Started
-```
+This page focuses on **temporal patterns** and **station-level balance**, offering a macro and micro view of operational dynamics.
 
-This reflects the **station's directional bias**—whether it's primarily a **trip origin** or **destination**.
+#### Part 1: Total Trips by Month
+- **Line chart** shows monthly ridership from **Jan 2014 to Dec 2016**.
+- Split by user type (Subscriber vs Customer).
+- Reveals seasonal peaks and long-term growth trends.
 
----
+#### Part 2: Net Flow Analysis
+- Measures station-level flow:
+  
+  ```
+  Net Flow = Trips Ended - Trips Started
+  ```
 
-#### 📊 Net Flow Interpretation Table
+- Indicates whether a station is a net **trip origin or destination**.
+- Used to detect imbalances and manage fleet distribution.
 
-| **Net Flow Value** | **Meaning**                                                                                                           | **Potential Location Analysis**                                             |
-|--------------------|-----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+##### 📊 Net Flow Interpretation Table
+
+| **Net Flow Value** | **Meaning**                                                                                     | **Potential Location Analysis**                                             |
+|--------------------|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
 | `> 0`              | More trips **ended** than started → Indicates a **destination station**.<br>🟢 Potential **bike surplus**.             | Likely **residential areas**, **evening hotspots**, or **parks**.           |
 | `< 0`              | More trips **started** than ended → Indicates an **origin station**.<br>🔴 Potential **bike shortage**.                | Common in **office zones**, **commuter hubs**, or **campuses**.             |
 | `= 0`              | Balanced station usage → Equal inbound and outbound flow.<br>⚖️ **No imbalance**, efficient flow.                     | Typically found in **mixed-use areas**, like **downtowns** or **tourist areas**. |
 
+#### Filters Available:
+- **Date Range**
+- **Time of Day**
+- **Borough**
+- **Neighborhood**
 
----
-
-#### 🎛️ Available Filters
-- **Date Range**: Define custom time intervals for analysis.
-- **Time of Day**: Segment flow patterns by morning, afternoon, evening, and night.
-- **Borough / Neighborhood**: Analyze net flow in specific regions or local zones.
-
----
-
-#### 🧠 Additional Insight
-
-- **Positive Net Flow** zones suggest where users often **end their journeys**—likely **home neighborhoods** or **social venues**.
-- **Negative Net Flow** zones suggest **trip origin points**—often **business districts**, **train stations**, or **schools**.
-
-This insight helps:
-- **Urban planners** design more efficient systems,
-- **Fleet managers** optimize bike rebalancing,
-- And **stakeholders** make informed, location-aware decisions.
+This page is especially valuable for **logistics teams**, **urban planners**, and **data-driven policy design**.
 
 
 ---
