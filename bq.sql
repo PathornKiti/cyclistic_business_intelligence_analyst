@@ -152,9 +152,24 @@ SELECT
   sl.neighborhood,
   sl.latitude,
   sl.longitude,
+  sl.capacity,
   nf.trips_started,
   nf.trips_ended,
-  nf.net_flow
+  nf.net_flow,
+
+  -- 🚲 Utilization Metric
+  SAFE_DIVIDE(nf.trips_started + nf.trips_ended, sl.capacity) AS trips_per_dock,
+
+  -- ⚖️ Flow Stress Score
+  SAFE_DIVIDE(ABS(nf.net_flow), sl.capacity) AS flow_stress_score,
+
+  -- 🏷️ Utilization Status (optional flag column)
+  CASE
+    WHEN SAFE_DIVIDE(nf.trips_started + nf.trips_ended, sl.capacity) > 15 THEN 'Overused'
+    WHEN SAFE_DIVIDE(nf.trips_started + nf.trips_ended, sl.capacity) < 6 THEN 'Underused'
+    ELSE 'Efficient'
+  END AS utilization_status
+
 FROM
   net_flow nf
 LEFT JOIN
@@ -163,6 +178,7 @@ ON
   nf.station_name = sl.name
 WHERE
   sl.borough IS NOT NULL
+  AND nf.trip_date BETWEEN '2014-01-01' AND '2016-12-31'
 ORDER BY
   nf.trip_date, nf.station_name;
 

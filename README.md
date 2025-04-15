@@ -64,28 +64,51 @@ This section is ideal for identifying commuting patterns, high-demand travel cor
 
 ---
 
-### 📄 Page 3: Monthly Trends & Net Flow Analysis
+### 📄 Page 3: Station Utilization & Net Flow Analysis
 
-![Monthly Trips and Net Flow - Report Page 3](pic/report-3.png)
+![Utilization and Net Flow - Report Page 3](pic/report-3.png)
 
-This page focuses on **temporal patterns** and **station-level balance**, offering a macro and micro view of operational dynamics.
+This page highlights **station performance health** by visualizing two operational KPIs:
+- **Utilization Rate**: How intensively stations are used compared to their capacity.
+- **Net Flow**: The balance between trips started and ended at each station.
 
-#### Part 1: Total Trips by Month
-- **Line chart** shows monthly ridership from **Jan 2014 to Dec 2016**.
-- Split by user type (Subscriber vs Customer).
-- Reveals seasonal peaks and long-term growth trends.
+---
 
-#### Part 2: Net Flow Analysis
-- Measures station-level flow:
-  
+#### Part 1: Utilization Rate Over Time
+- A **line chart** shows the **average utilization rate** across the network from **Jan 2014 to Dec 2016**.
+- Utilization is defined as:
+
   ```
-  Net Flow = Trips Ended - Trips Started
+  Utilization Rate = (Trips Started + Trips Ended) / Capacity
   ```
 
-- Indicates whether a station is a net **trip origin or destination**.
-- Used to detect imbalances and manage fleet distribution.
+- Seasonal trends are clearly visible, with peaks typically in spring and summer months.
+- A higher rate suggests **higher infrastructure pressure** on docking stations.
 
-##### 📊 Net Flow Interpretation Table
+---
+
+#### Part 2: Station-Level Net Flow Map
+- The **interactive map** shows each station as a bubble:
+  - **Color** = Average Net Flow (green = surplus, red = shortage)
+  - **Size** = Trip Count
+- Enables geographic identification of **bike surplus/shortage zones**.
+
+---
+
+#### 📊 Sample Metrics Table
+
+| Borough | Neighborhood | Station Name                    | Utilization Rate | Average Flow | Flow Stress Score |
+|---------|--------------|----------------------------------|------------------|---------------|--------------------|
+| Queens  | Sunnyside    | 47 Ave & 31 St                  | 0.54             | 0.47          | 0.08               |
+| Queens  | Dutch Kills  | Queens Plaza N & Crescent St    | 1.88             | 1.32          | 0.12               |
+| Queens  | Hunters Point| Vernon Blvd & 50 Ave            | 2.26             | 0.26          | 0.13               |
+
+- **Flow Stress Score** = `ABS(Net Flow) / Capacity`
+  - A higher score indicates stations that may be **imbalanced relative to their size**.
+
+---
+
+#### 📌 Interpretation Table
 
 | **Net Flow Value** | **Meaning**                                                                                     | **Potential Location Analysis**                                             |
 |--------------------|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
@@ -93,13 +116,20 @@ This page focuses on **temporal patterns** and **station-level balance**, offeri
 | `< 0`              | More trips **started** than ended → Indicates an **origin station**.<br>🔴 Potential **bike shortage**.                | Common in **office zones**, **commuter hubs**, or **campuses**.             |
 | `= 0`              | Balanced station usage → Equal inbound and outbound flow.<br>⚖️ **No imbalance**, efficient flow.                     | Typically found in **mixed-use areas**, like **downtowns** or **tourist areas**. |
 
-#### Filters Available:
+---
+
+#### 🎛️ Available Filters
 - **Date Range**
-- **Time of Day**
 - **Borough**
 - **Neighborhood**
+- **Time of Day**
 
-This page is especially valuable for **logistics teams**, **urban planners**, and **data-driven policy design**.
+This page is a powerful tool for identifying:
+- **Overloaded or underused stations**
+- **Geographic flow imbalances**
+- **Seasonal pressure on infrastructure**
+
+Ideal for **operational logistics**, **urban infrastructure teams**, and **strategic planning discussions**.
 
 
 ---
