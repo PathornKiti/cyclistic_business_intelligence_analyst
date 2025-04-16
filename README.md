@@ -15,6 +15,85 @@ This repository contains documents and resources related to the **Cyclistic Busi
 This section summarizes the three key pages of the NYC Citibike dashboard report, with visuals and detailed breakdowns to guide business insights and analysis.
 
 ---
+### 📄 Page 0: Dashboard Usage Guide
+
+This page is designed to help users understand how to interact with the Cyclistic Business Intelligence Dashboard. It explains the structure, functionality, and intended use of each component without interpreting the data, allowing managers, analysts, and marketing stakeholders to draw their own insights.
+
+---
+
+#### 🧭 Navigation Tips
+
+- Use the **date range selector** to filter data across a custom or predefined time window.
+- Apply **filters** such as Season, Time of Day, Borough, Neighborhood, and User Type to narrow down specific contexts.
+- All charts and tables are interactive. Hover for tooltips, click to drill into values, and sort tables as needed.
+
+---
+
+#### 📊 Metric Tiles (Top Row)
+
+Each tile represents a key performance metric:
+
+- **Total Trips**: The total number of bike trips during the selected time range.
+- **Active Stations**: The count of stations that recorded activity (start or end of a trip).
+- **Utilization Rate**: Measures how frequently bikes are used relative to system capacity.
+- **Average Net Flow**: Shows the directional balance of bike movements per station — useful to assess station-level imbalances.
+
+These KPIs provide a quick operational summary of overall system health and usage intensity.
+
+---
+
+#### 📋 Latest Active Route Table
+
+A table listing the most active station-to-station routes in the latest available month.
+
+- **Latest Active Month**: The calendar month of highest activity per route.
+- **Route**: The path from origin to destination station.
+- **Total Trip in Month**: Number of trips along the given route in the selected month.
+
+Click column headers to sort or apply filters to isolate specific route patterns.
+
+---
+
+#### 📈 Trip by Month Date and User Type
+
+A monthly time series visualization that plots trip volume over time, segmented by user type (Subscriber, Customer).
+
+This chart helps in spotting usage patterns, seasonal fluctuations, or changes in behavior across different customer groups.
+
+---
+
+#### ⏰ Total Trip During a Day
+
+Bar chart illustrating how trips are distributed throughout different times of day:
+
+- Morning
+- Afternoon
+- Evening
+- Night
+
+This section is useful to understand commuter vs. recreational behavior based on time-of-day preferences.
+
+---
+
+#### 🍂 Total Trip by Season
+
+Compares total trip volume by season (Spring, Summer, Fall, Winter).
+
+Use this to evaluate how weather, seasonality, and promotional periods affect system usage.
+
+---
+
+#### 🔄 Reset Filter
+
+A button to clear all applied filters and return the dashboard to its default state. Useful for restarting analysis or removing drill-down views.
+
+---
+
+#### 🎯 Summary
+
+This page serves as a reference guide to make sure all users understand the purpose and interactivity of each section. It supports users in independently exploring the dashboard to form conclusions, answer business questions, and generate data-driven insights.
+
+---
 
 ### 📄 Page 1: Start Location Analysis
 
