@@ -34,18 +34,16 @@ ZIP_DIR = "zip_files"
 EXTRACT_DIR = "citibike_tripdata"
 
 # BigQuery Configuration
-BQ_PROJECT = "conicle-ai"
-BQ_DATASET = "Recommend"
-BQ_TABLE = "citibike_trips"
+BQ_PROJECT = "your_project_id"
+BQ_DATASET = "your_dataset"
+BQ_TABLE = "your_table_name"
 BQ_TABLE_FULL = f"{BQ_PROJECT}.{BQ_DATASET}.{BQ_TABLE}"
 
-
-BQ_EXTERNAL_TABLE = "citibike_trips_external"  # External table name
+BQ_EXTERNAL_TABLE = "your_external_table"
 BQ_EXTERNAL_TABLE_FULL = f"`{BQ_PROJECT}.{BQ_DATASET}.{BQ_EXTERNAL_TABLE}`"
 
 # GCS Bucket for Parquet files (for external table in BigQuery)
-GCS_BUCKET = "citi_bike_trips_parquet"
-
+GCS_BUCKET = "your_gcs_bucket_name"
 
 # Load Google Cloud credentials
 service_account_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "/opt/gcp/google_credentials.json")
@@ -364,10 +362,10 @@ def create_external_table():
 
     # Define the external table DDL query
     ddl = f"""
-    CREATE OR REPLACE EXTERNAL TABLE `conicle-ai.Recommend.citibike_trips_external`
+    CREATE OR REPLACE EXTERNAL TABLE `{BQ_PROJECT}.{BQ_DATASET}.{BQ_EXTERNAL_TABLE}`
     OPTIONS (
-      format = 'PARQUET',
-      uris = ['{gcs_uri}']
+    format = 'PARQUET',
+    uris = ['gs://{GCS_BUCKET}/*.parquet']
     )
     """
 

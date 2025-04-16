@@ -27,10 +27,13 @@ spark = SparkSession.builder.appName("CitiBikeFlow").getOrCreate()
 # ───────────────────────────────
 # 🧠 GCP / BigQuery Setup
 # ───────────────────────────────
-BQ_PROJECT = "conicle-ai"
-BQ_DATASET = "Recommend"
-BQ_TABLE = "citibike_stations_location"
+# 🧠 GCP / BigQuery Setup
+# ───────────────────────────────
+BQ_PROJECT = "your_project_id"
+BQ_DATASET = "your_dataset"
+BQ_TABLE = "your_table_name"
 BQ_TABLE_FULL = f"{BQ_PROJECT}.{BQ_DATASET}.{BQ_TABLE}"
+
 service_account_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "/opt/gcp/google_credentials.json")
 credentials = service_account.Credentials.from_service_account_file(service_account_path)
 client = bigquery.Client(credentials=credentials, project=BQ_PROJECT)

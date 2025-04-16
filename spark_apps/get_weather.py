@@ -15,9 +15,9 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 # --- Config ---
-PROJECT_ID = "conicle-ai"
-DATASET_ID = "Recommend"
-TABLE_ID = "weather_summary"
+PROJECT_ID = "your_project_id"
+DATASET_ID = "your_dataset"
+TABLE_ID = "your_table_name"
 TABLE_FULL_ID = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
 
 # Credentials
@@ -47,7 +47,7 @@ def run_weather_etl():
         .master("local[*]") \
         .config("spark.jars", "/opt/spark/jars/spark-3.5-bigquery-0.42.1.jar") \
         .config("viewsEnabled", "true") \
-        .config("materializationDataset", "Recommend_temp") \
+        .config("materializationDataset", "temp_dataset") \
         .getOrCreate()
 
     query = """

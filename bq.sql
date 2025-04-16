@@ -2,7 +2,7 @@
 -- Step 1: Filter summer trips from target years
 WITH summer_trips AS (
   SELECT *
-  FROM `conicle-ai.Recommend.citibike_trips_external`
+  FROM `your_project_id.your_dataset.citibike_trips_external`
   WHERE EXTRACT(YEAR FROM starttime) IN (2014, 2015, 2016)
 ),
 
@@ -34,10 +34,10 @@ joined_data AS (
     s_end.borough AS end_borough,
     s_end.neighborhood AS end_neighborhood
   FROM summer_trips t
-  JOIN `conicle-ai.Recommend.citibike_stations_location` s_start
+  JOIN `your_project_id.your_dataset.citibike_stations_location` s_start
     ON ROUND(t.start_station_latitude, 3) = ROUND(s_start.latitude, 3)
        AND ROUND(t.start_station_longitude, 3) = ROUND(s_start.longitude, 3)
-  JOIN `conicle-ai.Recommend.citibike_stations_location` s_end
+  JOIN `your_project_id.your_dataset.citibike_stations_location` s_end
     ON ROUND(t.end_station_latitude, 3) = ROUND(s_end.latitude, 3)
        AND ROUND(t.end_station_longitude, 3) = ROUND(s_end.longitude, 3)
 ),
@@ -66,7 +66,7 @@ joined_with_weather AS (
     w.wind_speed,
     w.precipitation
   FROM joined_data jd
-  LEFT JOIN `conicle-ai.Recommend.weather_summary` w
+  LEFT JOIN `your_project_id.your_dataset.weather_summary` w
     ON jd.start_date = DATE(w.timestamp)
 ),
 
@@ -104,9 +104,6 @@ final_output AS (
 SELECT *
 FROM final_output;
 
-
-
-
 -- Station Congestion Table
 WITH trips_started AS (
   SELECT
@@ -114,7 +111,7 @@ WITH trips_started AS (
     DATE(starttime) AS trip_date,
     COUNT(*) AS trips_started
   FROM
-    `conicle-ai.Recommend.citibike_trips_external`
+    `your_project_id.your_dataset.citibike_trips_external`
   GROUP BY
     station_name, trip_date
 ),
@@ -125,7 +122,7 @@ trips_ended AS (
     DATE(stoptime) AS trip_date,
     COUNT(*) AS trips_ended
   FROM
-    `conicle-ai.Recommend.citibike_trips_external`
+    `your_project_id.your_dataset.citibike_trips_external`
   GROUP BY
     station_name, trip_date
 ),
@@ -173,7 +170,7 @@ SELECT
 FROM
   net_flow nf
 LEFT JOIN
-  `conicle-ai.Recommend.citibike_stations_location` sl
+  `your_project_id.your_dataset.citibike_stations_location` sl
 ON
   nf.station_name = sl.name
 WHERE
@@ -181,4 +178,3 @@ WHERE
   AND nf.trip_date BETWEEN '2014-01-01' AND '2016-12-31'
 ORDER BY
   nf.trip_date, nf.station_name;
-
