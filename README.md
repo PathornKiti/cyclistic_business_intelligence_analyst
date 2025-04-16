@@ -17,6 +17,8 @@ This section summarizes the three key pages of the NYC Citibike dashboard report
 ---
 ### 📄 Page 0: Dashboard Usage Guide
 
+![Cyclistic Dashboard Overview - Page 0](pic/report-summary.png)
+
 This page is designed to help users understand how to interact with the Cyclistic Business Intelligence Dashboard. It explains the structure, functionality, and intended use of each component without interpreting the data, allowing managers, analysts, and marketing stakeholders to draw their own insights.
 
 ---
@@ -92,6 +94,7 @@ A button to clear all applied filters and return the dashboard to its default st
 #### 🎯 Summary
 
 This page serves as a reference guide to make sure all users understand the purpose and interactivity of each section. It supports users in independently exploring the dashboard to form conclusions, answer business questions, and generate data-driven insights.
+
 
 ---
 
